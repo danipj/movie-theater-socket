@@ -16,6 +16,6 @@ int list_movie_title_rooms();
 int list_movie_by_gender(char genre[50]);
 int find_title_by_id();
 int find_info_by_id();
-int list_all();
+int list_all(char * response);
 
 #endif

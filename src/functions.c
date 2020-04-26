@@ -52,4 +52,22 @@ int create_movie(int id, char title[50], char genre[50], int room, char synopsis
     fprintf(f, "%s\n", synopsis);
 
     fclose(f);
+    return (1);
+}
+
+int list_all(char *response){
+    FILE *f = fopen(filename, "r");
+    char c;
+    int total = 0;
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        return(-1);
+    }
+     while ((c = getc(f)) != EOF){
+        response[total] = c;
+        total++;
+     }
+    fclose(f);
+    return(1);
 }
