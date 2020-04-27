@@ -105,3 +105,37 @@ int find_title_by_id(char id, char * response){
     fclose(f);
     return (0); //nao achou
 }
+
+int find_info_by_id(char id, char * response){
+    char c;
+    int lines = 0;
+    int found = 0;
+    int totalLetters = 0;
+    FILE *f = fopen(filename, "r");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        return(-1);
+    }
+    //id a cada 5 linhas: 0, 5, 10 etc
+    while ((c = getc(f)) != EOF){
+        if(lines%5==0 && c-'0'==id){
+            //achou o id
+            found = 1;
+        }
+        if(found){
+            response[totalLetters] = c;
+            totalLetters++;
+        }
+        
+        if(c=='\n'){
+            lines++;
+        }
+        if(found && lines%5==0 && c-'0'!=id){
+            fclose(f);
+            return (1); //chegou no proximo registro, encerrar
+        }
+     }
+    fclose(f);
+    return (0); //nao achou
+}

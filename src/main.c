@@ -7,10 +7,13 @@ int main(){
     printf("%d\n",create_movie(3, "hmmmm", "action", 2, "sinoposen"));
 
     printf("loco\n");
-    char respostassss[350];
+    char respostassss[350], teste[350];
     //printf("%d\n",list_all(respostassss));
     //printf("%s\n", respostassss);  
 
     printf("%d\n",find_title_by_id(2,respostassss));
-    printf("%s\n", respostassss); 
+    printf("%s\n", respostassss);
+
+    printf("%d\n",find_info_by_id(3,teste));
+    printf("%s\n", teste); 
 }
