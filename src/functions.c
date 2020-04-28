@@ -46,8 +46,8 @@ int create_movie(int id, char title[50], char genre[50], int room, char synopsis
 
     /*int id = count_movies()+1; /*descobre prox id*/
     fprintf(f, "%d\n", id);
-    fprintf(f, "%s\n", title);
     fprintf(f, "%s\n", genre);
+    fprintf(f, "%s\n", title);
     fprintf(f, "%d\n", room);
     fprintf(f, "%s\n", synopsis);
 
@@ -89,8 +89,8 @@ int find_title_by_id(char id, char * response){
             //achou o id
             found = 1;
         }
-        if(lines%5==1 && found){
-            //linha após a linha do id certo = titulo
+        if(lines%5==2 && found){
+            //linha do titulo
             response[totalLetters] = c;
             totalLetters++;
         }
@@ -151,12 +151,65 @@ int list_movie_title_rooms(char * response){
         return(-1);
     }
     while ((c = getc(f)) != EOF){
-        if(lines%5==1 || lines%5==3){
+        if(lines%5==2 || lines%5==3){
             response[total]=c;
             total++;
         }
         if(c=='\n'){
             lines++;
+        }
+    }
+    fclose(f);
+    return(1);
+}
+
+int list_movie_by_gender(char genre[50],char * response){
+    char c;
+    int i;
+    int lines = 0;
+    int totalGenre = 0;
+    int total = 0;
+    char genero[50];
+    int found = 0;
+    int check = 0;
+    FILE *f = fopen(filename, "r");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        return(-1);
+    }
+    while ((c = getc(f)) != EOF){
+        if(c=='\n'){
+            lines++;
+        }
+        if(lines%5==1 && c!='\n'){ //pegar genero
+            genero[totalGenre]=c;
+            totalGenre++;
+        }
+
+        if(lines%5==2 && c=='\n'){ //terminou o genero pode comparar
+            check = 1;
+        }
+
+        if(check){
+            if(strcmp(genero, genre) == 0){ //é o genero certo
+                found = 1;
+            }
+            check = 0;
+            for (i = 0; i < totalGenre; i++)
+            {
+                genero[i]='\0';
+            }
+            totalGenre=0;
+        }
+
+        if(found && lines%5==2){ //pegar titulo
+            response[total] = c;
+            total++;
+        }
+
+        if(lines%5==3 && c=='\n'){ //terminou o titulo, zerar auxiliares
+            found = 0;
         }
     }
     fclose(f);
