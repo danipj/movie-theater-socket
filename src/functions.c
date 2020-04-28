@@ -139,3 +139,26 @@ int find_info_by_id(char id, char * response){
     fclose(f);
     return (0); //nao achou
 }
+
+int list_movie_title_rooms(char * response){
+    char c;
+    int lines = 0;
+    int total = 0;
+    FILE *f = fopen(filename, "r");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        return(-1);
+    }
+    while ((c = getc(f)) != EOF){
+        if(lines%5==1 || lines%5==3){
+            response[total]=c;
+            total++;
+        }
+        if(c=='\n'){
+            lines++;
+        }
+    }
+    fclose(f);
+    return(1);
+}

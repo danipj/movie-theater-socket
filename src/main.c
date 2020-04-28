@@ -11,9 +11,7 @@ int main(){
     //printf("%d\n",list_all(respostassss));
     //printf("%s\n", respostassss);  
 
-    printf("%d\n",find_title_by_id(2,respostassss));
+    printf("%d\n",list_movie_title_rooms(respostassss));
     printf("%s\n", respostassss);
 
-    printf("%d\n",find_info_by_id(3,teste));
-    printf("%s\n", teste); 
 }
