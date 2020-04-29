@@ -145,16 +145,17 @@ int main(void)
             close(sockfd);
 
             memset(cli_command, '\0', CLI_COMMAND_SIZE * sizeof(char));
-            read_bytes = recv(new_fd, cli_command, CLI_COMMAND_SIZE - 1, 0);
+            read_bytes = recv(new_fd, cli_command, CLI_COMMAND_SIZE, 0);
 
-            if (read_bytes == -1)
+            if (read_bytes != CLI_COMMAND_SIZE)
             {
                 perror("Erro na leitura do comando do cliente!");
+                printf("Recebi apenas %db enquanto esperava %db!", read_bytes, CLI_COMMAND_SIZE);
                 exit(1);
             }
 
             printf("Servidor: recebi o comando '%s'\n", cli_command);
-            handle_menu(cli_command);
+            handle_menu(cli_command, new_fd);
 
             // if (send(new_fd, "Hello, world!", 13, 0) == -1)
             //     perror("send");

@@ -30,7 +30,7 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
-void menu(movie *m)
+int menu(movie *m)
 {
     int option;
     printf("+----------------------------------------------------------------------------------------------+\n");
@@ -91,11 +91,10 @@ void menu(movie *m)
     case 7:
         printf("Solicitação por todos os dados de todos os filmes\n");
         break;
-    case 8:
-        exit(0);
     default:
-        return;
+        exit(0);
     }
+    return option;
 }
 
 int main(int argc, char *argv[])
@@ -113,7 +112,8 @@ int main(int argc, char *argv[])
     }
 
     movie m;
-    menu(&m);
+    int option;
+    option = menu(&m);
     printf("O título %s terá o id %d\n", m.title, m.id);
 
     memset(&hints, 0, sizeof hints);
@@ -158,15 +158,26 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1)
+    // if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1)
+    // {
+    //     perror("recv");
+    //     exit(1);
+    // }
+
+    // buf[numbytes] = '\0';
+
+    // printf("client: received '%s'\n", buf);
+
+    if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
     {
-        perror("recv");
-        exit(1);
+        printf("error writing my message");
     }
 
-    buf[numbytes] = '\0';
+    char command[309];
+    memset(command, '\0', 309);
+    command[0] = (char) option + '0';
 
-    printf("client: received '%s'\n", buf);
+    send(sockfd, command, 309, 0);
 
     close(sockfd);
 

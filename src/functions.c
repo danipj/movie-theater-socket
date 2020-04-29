@@ -1,9 +1,11 @@
 #include "functions.h"
+#include <sys/socket.h>
 #include <stdio.h>
 #include <string.h>
 
 char* filename = "db.txt";
 
+int CLI_COMMAND_SIZE = sizeof(movie) + sizeof(char);
 // int count_movies(){
 //     FILE *fp;
 //     int count = 0;  // Line counter (result)
@@ -216,7 +218,11 @@ int list_movie_by_gender(char genre[50],char * response){
     return(1);
 }
 
-int handle_menu(char cli_command[CLI_COMMAND_SIZE])
+int prompt_data(int socket, char *message, char *response, int response_length)
+{
+    return 0;
+}
+int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd)
 {
 
     int menu_option = (int)cli_command[0] - '0';
@@ -225,6 +231,17 @@ int handle_menu(char cli_command[CLI_COMMAND_SIZE])
     switch (menu_option){
         case 1:
             printf("Solicitação por cadastro do filme\n");
+            int id;
+            char title[50];
+            char genre[50];
+            int room;
+            char synopsis[200];
+            char buffer[200];
+
+            send(sockfd, "Qual o ID?\n> ", 14, 0);
+            int read_bytes = recv(sockfd, &buffer, sizeof(int), 0);
+
+            printf("Buffer agora é '%s'", buffer);
             break;
         case 2:
             printf("Solicitação de remoção de um filme\n");

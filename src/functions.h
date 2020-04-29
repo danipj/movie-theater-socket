@@ -1,8 +1,6 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#define CLI_COMMAND_SIZE 203
-
 typedef struct movie
 {
     int id;
@@ -12,13 +10,16 @@ typedef struct movie
     char synopsis[200];
 } movie;
 
+int CLI_COMMAND_SIZE;
+
 int create_movie(int id, char title[50], char genre[50], int room, char synopsis[200]);
 int delete_movie(int movie_id);
-int list_movie_title_rooms(char * response);
-int list_movie_by_gender(char genre[50], char* response);
-int find_title_by_id(char id, char* response);
-int find_info_by_id(char id, char* response);
-int list_all(char * response);
+int list_movie_title_rooms(char *response);
+int list_movie_by_gender(char genre[50], char *response);
+int find_title_by_id(char id, char *response);
+int find_info_by_id(char id, char *response);
+int list_all(char *response);
 
-int handle_menu(char cli_command[CLI_COMMAND_SIZE]);
+int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd);
+int prompt_data(int socket, char *message, char *response, int response_length);
 #endif
