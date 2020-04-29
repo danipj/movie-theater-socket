@@ -30,7 +30,7 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
-void menu(char *data[CLI_COMMAND_SIZE])
+void menu(movie *m)
 {
     int option;
     printf("+----------------------------------------------------------------------------------------------+\n");
@@ -53,23 +53,28 @@ void menu(char *data[CLI_COMMAND_SIZE])
     {
     case 1:
         printf("Solicitação por cadastro do filme\n");
-        int id;
-        char title[50];
-        char genre[50];
-        int room;
-        char synopsis[200];
 
         printf("Insira o ID: ");
-        scanf("%d", &id);
+        scanf("%d", &(m->id));
 
         printf("Insira o título: ");
-        scanf("%s", title);
+        scanf("%s", m->title);
 
-        printf("O título %s terá o id %d\n", title, id);
-        exit(0);
+        printf("Insira o genero: ");
+        scanf("%s", m->genre);
+
+        printf("Insira a sala: ");
+        scanf("%d", &(m->room));
+
+        printf("Insira a sinopse: ");
+        scanf("%s", m->synopsis);
+
         break;
     case 2:
         printf("Solicitação de remoção de um filme\n");
+
+        printf("Insira o ID: ");
+        scanf("%d", &(m->id));
         break;
     case 3:
         printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
@@ -89,7 +94,7 @@ void menu(char *data[CLI_COMMAND_SIZE])
     case 8:
         exit(0);
     default:
-        return ;
+        return;
     }
 }
 
@@ -107,7 +112,9 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    menu(NULL);
+    movie m;
+    menu(&m);
+    printf("O título %s terá o id %d\n", m.title, m.id);
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
