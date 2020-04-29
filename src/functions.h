@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#define CLI_COMMAND_SIZE 203
+
 typedef struct movie
 {
     int id;
@@ -18,5 +20,5 @@ int find_title_by_id(char id, char* response);
 int find_info_by_id(char id, char* response);
 int list_all(char * response);
 
-int handle_menu(int menu_option);
+int handle_menu(char cli_command[CLI_COMMAND_SIZE]);
 #endif

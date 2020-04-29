@@ -216,29 +216,33 @@ int list_movie_by_gender(char genre[50],char * response){
     return(1);
 }
 
-int handle_menu(int menu_option)
+int handle_menu(char cli_command[CLI_COMMAND_SIZE])
 {
+
+    int menu_option = (int)cli_command[0] - '0';
+
+    printf("Servidor: Opção do menu é %d\n", menu_option);
     switch (menu_option){
         case 1:
-            printf("Solicitação por cadastro do filme");
+            printf("Solicitação por cadastro do filme\n");
             break;
         case 2:
-            printf("Solicitação de remoção de um filme");
+            printf("Solicitação de remoção de um filme\n");
             break;
         case 3:
-            printf("Solicitação de listagem dos títulos e salas de todos os filmes");
+            printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
             break;
         case 4:
-            printf("Solicitação de listagem de todos os filmes de um gênero");
+            printf("Solicitação de listagem de todos os filmes de um gênero\n");
             break;
         case 5:
-            printf("Solicitação de busca pelo título de um filme");
+            printf("Solicitação de busca pelo título de um filme\n");
             break;
         case 6:
-            printf("Solicitação de busca por todas as informações de um filme");
+            printf("Solicitação de busca por todas as informações de um filme\n");
             break;
         case 7:
-            printf("Solicitação por todos os dados de todos os filmes");
+            printf("Solicitação por todos os dados de todos os filmes\n");
             break;
         default:
             return -1;

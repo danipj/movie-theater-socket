@@ -11,6 +11,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+#include "functions.h"
+
 #define PORT "8110" // Porta de conexão ao servidor
 
 #define BACKLOG 10 // Quantas conexões pendentes são permitidas
@@ -138,9 +140,24 @@ int main(void)
         // Dentro desse bloco, o pedido do cliente será de fato processado
         if (!fork())
         {
-            close(sockfd); // child doesn't need the listener
-            if (send(new_fd, "Hello, world!", 13, 0) == -1)
-                perror("send");
+            int read_bytes;
+            char cli_command[CLI_COMMAND_SIZE];
+            close(sockfd);
+
+            memset(cli_command, '\0', CLI_COMMAND_SIZE * sizeof(char));
+            read_bytes = recv(new_fd, cli_command, CLI_COMMAND_SIZE - 1, 0);
+
+            if (read_bytes == -1)
+            {
+                perror("Erro na leitura do comando do cliente!");
+                exit(1);
+            }
+
+            printf("Servidor: recebi o comando '%s'\n", cli_command);
+            handle_menu(cli_command);
+
+            // if (send(new_fd, "Hello, world!", 13, 0) == -1)
+            //     perror("send");
             close(new_fd);
             exit(0);
         }
