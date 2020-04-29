@@ -5,8 +5,8 @@
 char* filename = "db.txt";
 
 // int count_movies(){
-//     FILE *fp; 
-//     int count = 0;  // Line counter (result) 
+//     FILE *fp;
+//     int count = 0;  // Line counter (result)
 //     char c;  //
 //     FILE *f = fopen(filename, "r");
 //     if (f == NULL)
@@ -15,17 +15,17 @@ char* filename = "db.txt";
 //         return(-1);
 //     }
 
-//     // Extract characters from file and store in character c 
-//     for (c = getc(fp); c != EOF; c = getc(fp)) 
-//         if (c == '\n') // Increment count if this character is newline 
-//             count = count + 1; 
-  
-//     // Close the file 
-//     fclose(fp); 
+//     // Extract characters from file and store in character c
+//     for (c = getc(fp); c != EOF; c = getc(fp))
+//         if (c == '\n') // Increment count if this character is newline
+//             count = count + 1;
+
+//     // Close the file
+//     fclose(fp);
 //     return(count/5);
 // }
 
-/** recebe um filme 
+/** recebe um filme
     int id;
     char title[50];
     char genre[50];
@@ -127,7 +127,7 @@ int find_info_by_id(char id, char * response){
             response[totalLetters] = c;
             totalLetters++;
         }
-        
+
         if(c=='\n'){
             lines++;
         }
@@ -214,4 +214,36 @@ int list_movie_by_gender(char genre[50],char * response){
     }
     fclose(f);
     return(1);
+}
+
+int handle_menu(int menu_option)
+{
+    switch (menu_option){
+        case 1:
+            printf("Solicitação por cadastro do filme");
+            break;
+        case 2:
+            printf("Solicitação de remoção de um filme");
+            break;
+        case 3:
+            printf("Solicitação de listagem dos títulos e salas de todos os filmes");
+            break;
+        case 4:
+            printf("Solicitação de listagem de todos os filmes de um gênero");
+            break;
+        case 5:
+            printf("Solicitação de busca pelo título de um filme");
+            break;
+        case 6:
+            printf("Solicitação de busca por todas as informações de um filme");
+            break;
+        case 7:
+            printf("Solicitação por todos os dados de todos os filmes");
+            break;
+        default:
+            return -1;
+
+    }
+
+    return 0;
 }
