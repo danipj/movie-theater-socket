@@ -1,12 +1,16 @@
 #include "functions.h"
+#include <sys/socket.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 
 char* filename = "db.txt";
 
+int CLI_COMMAND_SIZE = sizeof(movie) + sizeof(char);
 // int count_movies(){
-//     FILE *fp; 
-//     int count = 0;  // Line counter (result) 
+//     FILE *fp;
+//     int count = 0;  // Line counter (result)
 //     char c;  //
 //     FILE *f = fopen(filename, "r");
 //     if (f == NULL)
@@ -15,17 +19,17 @@ char* filename = "db.txt";
 //         return(-1);
 //     }
 
-//     // Extract characters from file and store in character c 
-//     for (c = getc(fp); c != EOF; c = getc(fp)) 
-//         if (c == '\n') // Increment count if this character is newline 
-//             count = count + 1; 
-  
-//     // Close the file 
-//     fclose(fp); 
+//     // Extract characters from file and store in character c
+//     for (c = getc(fp); c != EOF; c = getc(fp))
+//         if (c == '\n') // Increment count if this character is newline
+//             count = count + 1;
+
+//     // Close the file
+//     fclose(fp);
 //     return(count/5);
 // }
 
-/** recebe um filme 
+/** recebe um filme
     int id;
     char title[50];
     char genre[50];
@@ -127,7 +131,7 @@ int find_info_by_id(char id, char * response){
             response[totalLetters] = c;
             totalLetters++;
         }
-        
+
         if(c=='\n'){
             lines++;
         }
@@ -214,4 +218,78 @@ int list_movie_by_gender(char genre[50],char * response){
     }
     fclose(f);
     return(1);
+}
+
+int prompt_data(int socket, char *message, char *response, int response_length)
+{
+    return 0;
+}
+int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd)
+{
+
+    int menu_option = (int)cli_command[0] - '0';
+    printf("Servidor: Opção char do menu é %c\n", cli_command[0]);
+    printf("Servidor: Opção do menu é %d\n", menu_option);
+    switch (menu_option){
+        case 1:
+            printf("Solicitação por cadastro do filme\n");
+            int id;
+            char title[50];
+            char genre[50];
+            int room;
+            char synopsis[200];
+            char buffer[200];
+
+            send(sockfd, "Qual o ID?\n> ", 14, 0);
+            int read_bytes = recv(sockfd, &buffer, sizeof(int), 0);
+
+            printf("Buffer agora é '%s'", buffer);
+            break;
+        case 2:
+            printf("Solicitação de remoção de um filme\n");
+            break;
+        case 3:
+            printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
+            break;
+        case 4:
+            printf("Solicitação de listagem de todos os filmes de um gênero\n");
+            break;
+        case 5:
+            printf("Solicitação de busca pelo título de um filme\n");
+            break;
+        case 6:
+            printf("Solicitação de busca por todas as informações de um filme\n");
+            break;
+        case 7:
+            printf("Solicitação por todos os dados de todos os filmes\n");
+            break;
+        default:
+            return -1;
+
+    }
+
+    return 0;
+}
+
+int send_all(int socket, void *buffer, size_t length) {
+    char *ptr = (char*) buffer;
+    while (length > 0)
+    {
+        int i = send(socket, ptr, length, 0);
+        if (i < 1)
+            return -1;
+        ptr += i;
+        length -= i;
+    }
+    return 0;
+}
+
+void print_movie(movie* m)
+{
+    printf("----------------\n");
+    printf("id: %d\n", m->id);
+    printf("nome: %s\n", m->title);
+    printf("gênero: %s\n", m->genre);
+    printf("sinopse: %s\n", m->synopsis);
+    printf("----------------\n");
 }
