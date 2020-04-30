@@ -230,7 +230,10 @@ int handle_menu(int menu_option, movie *m)
             printf("Servidor: Filme '%s' cadastrado!\n", m->title);
             break;
         case 2:
-            printf("Solicitação de remoção de um filme\n");
+            printf("Servidor: Solicitação de remoção do filme %d\n", m->id);
+            printf("Não implementado!!");
+            exit(1);
+            delete_movie(m->id);
             break;
         case 3:
             printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
