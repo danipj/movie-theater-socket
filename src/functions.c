@@ -283,3 +283,13 @@ int send_all(int socket, void *buffer, size_t length) {
     }
     return 0;
 }
+
+void print_movie(movie* m)
+{
+    printf("----------------\n");
+    printf("id: %d\n", m->id);
+    printf("nome: %s\n", m->title);
+    printf("gênero: %s\n", m->genre);
+    printf("sinopse: %s\n", m->synopsis);
+    printf("----------------\n");
+}

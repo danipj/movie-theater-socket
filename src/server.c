@@ -142,7 +142,7 @@ int main(void)
         {
             int cli_option;
             int read_bytes;
-            char cli_command[CLI_COMMAND_SIZE];
+            movie m;
             close(sockfd);
 
             // Primeiro, lemos o comando do cliente
@@ -157,17 +157,19 @@ int main(void)
 
             printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
 
-            // memset(cli_command, '\0', CLI_COMMAND_SIZE * sizeof(char));
-            // read_bytes = recv(new_fd, cli_command, CLI_COMMAND_SIZE, 0);
+            // Em seguida, recebemos toda a estrutura de filme
 
-            // if (read_bytes != CLI_COMMAND_SIZE)
-            // {
-            //     perror("Erro na leitura do comando do cliente!");
-            //     printf("Recebi apenas %db enquanto esperava %db!", read_bytes, CLI_COMMAND_SIZE);
-            //     exit(1);
-            // }
+            read_bytes = recv(new_fd, &m, sizeof(movie), 0);
 
-            // printf("Servidor: recebi o comando '%s'\n", cli_command);
+            if (read_bytes != sizeof(movie))
+            {
+                perror("Erro na leitura do comando do cliente!");
+                printf("Recebi apenas %db enquanto esperava %lub!", read_bytes, sizeof(movie));
+                exit(1);
+            }
+
+            printf("Servidor: recebi o filme:\n");
+            print_movie(&m);
             // handle_menu(cli_command, new_fd);
 
             // if (send(new_fd, "Hello, world!", 13, 0) == -1)

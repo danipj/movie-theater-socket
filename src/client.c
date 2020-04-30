@@ -30,8 +30,18 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
+void remove_final_linebreaker(char str[])
+{
+    size_t len = strlen(str);
+    if (len > 0 && str[len - 1] == '\n')
+    {
+        str[len - 1] = '\0';
+    }
+}
+
 int menu(movie *m)
 {
+    char buffer[4];
     int option;
     printf("+----------------------------------------------------------------------------------------------+\n");
     printf("|                                                                                              |\n");
@@ -47,7 +57,8 @@ int menu(movie *m)
     printf("+----------------------------------------------------------------------------------------------+\n");
     printf("Digite uma opção > ");
 
-    scanf("%d", &option);
+    fgets(buffer, 4, stdin);
+    option = atoi(buffer);
 
     switch (option)
     {
@@ -55,19 +66,24 @@ int menu(movie *m)
         printf("Solicitação por cadastro do filme\n");
 
         printf("Insira o ID: ");
-        scanf("%d", &(m->id));
+        fgets(buffer, 4, stdin);
+        m->id = atoi(buffer);
 
         printf("Insira o título: ");
-        scanf("%s", m->title);
+        fgets(m->title, 50, stdin);
+        remove_final_linebreaker(m->title);
 
         printf("Insira o genero: ");
-        scanf("%s", m->genre);
+        fgets(m->genre, 50, stdin);
+        remove_final_linebreaker(m->genre);
 
         printf("Insira a sala: ");
-        scanf("%d", &(m->room));
+        fgets(buffer, 4, stdin);
+        m->room = atoi(buffer);
 
         printf("Insira a sinopse: ");
-        scanf("%s", m->synopsis);
+        fgets(m->synopsis, 200, stdin);
+        remove_final_linebreaker(m->synopsis);
 
         break;
     case 2:
@@ -168,14 +184,17 @@ int main(int argc, char *argv[])
 
     // printf("client: received '%s'\n", buf);
 
-    // if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
-    // {
-    //     printf("error writing my message");
-    // }
+
 
     // enviando a opção selecionada
     printf("Cliente: a opção é %d", option);
     send(sockfd, &option, sizeof(int), 0);
+
+    // Em seguida, enviamos toda a estrutura de filme
+    if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
+    {
+        printf("Cliente: erro ao enviar o filme!");
+    }
     // char command[309];
     // char optchar = (char)option + '0';
     // memset(command, 'e', 309 * sizeof(char));
