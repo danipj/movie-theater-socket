@@ -168,16 +168,23 @@ int main(int argc, char *argv[])
 
     // printf("client: received '%s'\n", buf);
 
-    if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
-    {
-        printf("error writing my message");
-    }
+    // if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
+    // {
+    //     printf("error writing my message");
+    // }
 
-    char command[309];
-    memset(command, '\0', 309);
-    command[0] = (char) option + '0';
+    // enviando a opção selecionada
+    printf("Cliente: a opção é %d", option);
+    send(sockfd, &option, sizeof(int), 0);
+    // char command[309];
+    // char optchar = (char)option + '0';
+    // memset(command, 'e', 309 * sizeof(char));
+    // printf("Option é %c", optchar);
+    // command[0] = optchar;
 
-    send(sockfd, command, 309, 0);
+    // printf("Command é '%s'\n", command);
+
+    //
 
     close(sockfd);
 

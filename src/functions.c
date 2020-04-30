@@ -1,6 +1,8 @@
 #include "functions.h"
 #include <sys/socket.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 
 char* filename = "db.txt";
@@ -226,7 +228,7 @@ int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd)
 {
 
     int menu_option = (int)cli_command[0] - '0';
-
+    printf("Servidor: Opção char do menu é %c\n", cli_command[0]);
     printf("Servidor: Opção do menu é %d\n", menu_option);
     switch (menu_option){
         case 1:
@@ -266,5 +268,18 @@ int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd)
 
     }
 
+    return 0;
+}
+
+int send_all(int socket, void *buffer, size_t length) {
+    char *ptr = (char*) buffer;
+    while (length > 0)
+    {
+        int i = send(socket, ptr, length, 0);
+        if (i < 1)
+            return -1;
+        ptr += i;
+        length -= i;
+    }
     return 0;
 }
