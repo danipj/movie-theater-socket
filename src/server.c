@@ -172,8 +172,6 @@ int main(void)
             print_movie(&m);
             handle_menu(cli_option, &m);
 
-            // if (send(new_fd, "Hello, world!", 13, 0) == -1)
-            //     perror("send");
             close(new_fd);
             exit(0);
         }

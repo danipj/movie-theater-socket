@@ -90,7 +90,8 @@ int menu(movie *m)
         printf("Solicitação de remoção de um filme\n");
 
         printf("Insira o ID: ");
-        scanf("%d", &(m->id));
+        fgets(buffer, 4, stdin);
+        m->id = atoi(buffer);
         break;
     case 3:
         printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
@@ -174,18 +175,6 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    // if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1)
-    // {
-    //     perror("recv");
-    //     exit(1);
-    // }
-
-    // buf[numbytes] = '\0';
-
-    // printf("client: received '%s'\n", buf);
-
-
-
     // enviando a opção selecionada
     printf("Cliente: a opção é %d", option);
     send(sockfd, &option, sizeof(int), 0);
@@ -195,15 +184,6 @@ int main(int argc, char *argv[])
     {
         printf("Cliente: erro ao enviar o filme!");
     }
-    // char command[309];
-    // char optchar = (char)option + '0';
-    // memset(command, 'e', 309 * sizeof(char));
-    // printf("Option é %c", optchar);
-    // command[0] = optchar;
-
-    // printf("Command é '%s'\n", command);
-
-    //
 
     close(sockfd);
 
