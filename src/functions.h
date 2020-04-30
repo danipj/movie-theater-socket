@@ -20,8 +20,7 @@ int find_title_by_id(char id, char *response);
 int find_info_by_id(char id, char *response);
 int list_all(char *response);
 
-int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd);
-int prompt_data(int socket, char *message, char *response, int response_length);
+int handle_menu(int menu_option, movie *m);
 int send_all(int socket, void *buffer, size_t length);
 void print_movie(movie* m);
 #endif

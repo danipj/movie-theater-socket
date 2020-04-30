@@ -220,30 +220,14 @@ int list_movie_by_gender(char genre[50],char * response){
     return(1);
 }
 
-int prompt_data(int socket, char *message, char *response, int response_length)
-{
-    return 0;
-}
-int handle_menu(char cli_command[CLI_COMMAND_SIZE], int sockfd)
+int handle_menu(int menu_option, movie *m)
 {
 
-    int menu_option = (int)cli_command[0] - '0';
-    printf("Servidor: Opção char do menu é %c\n", cli_command[0]);
-    printf("Servidor: Opção do menu é %d\n", menu_option);
     switch (menu_option){
         case 1:
-            printf("Solicitação por cadastro do filme\n");
-            int id;
-            char title[50];
-            char genre[50];
-            int room;
-            char synopsis[200];
-            char buffer[200];
-
-            send(sockfd, "Qual o ID?\n> ", 14, 0);
-            int read_bytes = recv(sockfd, &buffer, sizeof(int), 0);
-
-            printf("Buffer agora é '%s'", buffer);
+            printf("Servidor: Solicitação por cadastro do filme\n");
+            create_movie(m->id, m->title, m->genre, m->room, m->synopsis);
+            printf("Servidor: Filme '%s' cadastrado!\n", m->title);
             break;
         case 2:
             printf("Solicitação de remoção de um filme\n");

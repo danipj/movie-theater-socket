@@ -140,10 +140,10 @@ int main(void)
         // Dentro desse bloco, o pedido do cliente será de fato processado
         if (!fork())
         {
+            close(sockfd);
             int cli_option;
             int read_bytes;
             movie m;
-            close(sockfd);
 
             // Primeiro, lemos o comando do cliente
             read_bytes = recv(new_fd, &cli_option, sizeof(int), 0);
@@ -170,7 +170,7 @@ int main(void)
 
             printf("Servidor: recebi o filme:\n");
             print_movie(&m);
-            // handle_menu(cli_command, new_fd);
+            handle_menu(cli_option, &m);
 
             // if (send(new_fd, "Hello, world!", 13, 0) == -1)
             //     perror("send");
