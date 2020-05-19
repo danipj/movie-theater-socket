@@ -243,22 +243,12 @@ int handle_menu(int menu_option, movie *m, int socket)
         case 3:
             printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
 
-            // strcpy(message, "Olar!");
             list_all(message);
             printf("Servidor: message é '%s'\n", message);
 
             if (send(socket, message, sizeof(message), 0) == -1){
                 printf("Erro ao enviar mensagem!\n");
             }
-
-
-
-            // numbytes = write(socket, message, 5000);
-
-            // if (numbytes != RESPONSE_SIZE * sizeof(char))
-            // {
-            //     printf("Servidor: erro ao enviar resposta");
-            // }
 
             printf("Servidor: %d bytes enviados", numbytes);
             break;
