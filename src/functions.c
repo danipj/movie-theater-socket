@@ -254,6 +254,16 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 4:
             printf("Solicitação de listagem de todos os filmes de um gênero\n");
+
+            list_movie_by_gender(m->genre, message);
+
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+            printf("Servidor: %d bytes enviados", numbytes);
             break;
         case 5:
             printf("Solicitação de busca pelo título de um filme\n");
