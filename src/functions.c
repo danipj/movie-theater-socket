@@ -127,7 +127,7 @@ int find_info_by_id(char id, char * response){
     }
     //id a cada 5 linhas: 0, 5, 10 etc
     while ((c = getc(f)) != EOF){
-        if(lines%5==0 && c-'0'==id){
+        if(lines%5==0 && c==id){
             //achou o id
             found = 1;
         }
@@ -139,7 +139,7 @@ int find_info_by_id(char id, char * response){
         if(c=='\n'){
             lines++;
         }
-        if(found && lines%5==0 && c-'0'!=id){
+        if(found && lines%5==0 && c!=id){
             fclose(f);
             return (1); //chegou no proximo registro, encerrar
         }
@@ -287,6 +287,15 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 6:
             printf("Solicitação de busca por todas as informações de um filme\n");
+            find_info_by_id(m->id + '0', message);
+
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+            printf("Servidor: %d bytes enviados", numbytes);
             break;
         case 7:
             printf("Solicitação por todos os dados de todos os filmes\n");
