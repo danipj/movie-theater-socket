@@ -98,6 +98,10 @@ int menu(movie *m)
         break;
     case 4:
         printf("Solicitação de listagem de todos os filmes de um gênero\n");
+
+        printf("Informe o gênero: ");
+        fgets(m->genre, 50, stdin);
+        remove_final_linebreaker(m->genre);
         break;
     case 5:
         printf("Solicitação de busca pelo título de um filme\n");
@@ -186,7 +190,7 @@ int main(int argc, char *argv[])
     }
 
 
-    if (option == 3)
+    if (option >= 3)
     {
         char response[RESPONSE_SIZE];
         memset(response, '\0', RESPONSE_SIZE);
