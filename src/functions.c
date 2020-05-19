@@ -179,6 +179,8 @@ int list_movie_by_gender(char genre[50],char * response){
     int found = 0;
     int check = 0;
     FILE *f = fopen(filename, "r");
+
+    int genSize = strlen(genre);
     if (f == NULL)
     {
         printf("Error opening file!\n");
@@ -198,6 +200,8 @@ int list_movie_by_gender(char genre[50],char * response){
         }
 
         if(check){
+            genero[genSize] = '\0';
+            printf("Comparando '%s' com '%s'\n", genero, genre);
             if(strcmp(genero, genre) == 0){ //é o genero certo
                 found = 1;
             }
@@ -254,6 +258,16 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 4:
             printf("Solicitação de listagem de todos os filmes de um gênero\n");
+
+            list_movie_by_gender(m->genre, message);
+
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+            printf("Servidor: %d bytes enviados", numbytes);
             break;
         case 5:
             printf("Solicitação de busca pelo título de um filme\n");
