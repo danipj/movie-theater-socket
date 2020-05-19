@@ -176,13 +176,32 @@ int main(int argc, char *argv[])
     freeaddrinfo(servinfo); // all done with this structure
 
     // enviando a opção selecionada
-    printf("Cliente: a opção é %d", option);
+    printf("Cliente: a opção é %d\n", option);
     send(sockfd, &option, sizeof(int), 0);
 
     // Em seguida, enviamos toda a estrutura de filme
     if ((numbytes = write(sockfd, &m, sizeof(movie)) != sizeof(movie)))
     {
         printf("Cliente: erro ao enviar o filme!");
+    }
+
+
+    if (option == 3)
+    {
+        char response[RESPONSE_SIZE];
+        memset(response, '\0', RESPONSE_SIZE);
+
+        numbytes = recv(sockfd, response, 5000, 0);
+
+        if (numbytes != 5000)
+        {
+            perror("Cliente: erro ao receber resposta");
+            exit(1);
+        }
+
+        response[RESPONSE_SIZE] = '\0';
+        printf("Cliente: %d bytes recebidos\n", numbytes);
+        printf("A resposta é '%s' e tem tamanho %lu\n", response, sizeof(response));
     }
 
     close(sockfd);

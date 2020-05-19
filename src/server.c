@@ -170,7 +170,7 @@ int main(void)
 
             printf("Servidor: recebi o filme:\n");
             print_movie(&m);
-            handle_menu(cli_option, &m);
+            handle_menu(cli_option, &m, new_fd);
 
             close(new_fd);
             exit(0);
