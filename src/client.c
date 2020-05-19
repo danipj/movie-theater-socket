@@ -105,6 +105,10 @@ int menu(movie *m)
         break;
     case 5:
         printf("Solicitação de busca pelo título de um filme\n");
+
+        printf("Insira o ID: ");
+        fgets(buffer, 4, stdin);
+        m->id = atoi(buffer);
         break;
     case 6:
         printf("Solicitação de busca por todas as informações de um filme\n");
