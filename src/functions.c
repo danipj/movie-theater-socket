@@ -84,6 +84,7 @@ int find_title_by_id(char id, char * response){
     int found = 0;
     int totalLetters = 0;
     FILE *f = fopen(filename, "r");
+
     if (f == NULL)
     {
         printf("Error opening file!\n");
@@ -91,23 +92,24 @@ int find_title_by_id(char id, char * response){
     }
     //id a cada 5 linhas: 0, 5, 10 etc
     while ((c = getc(f)) != EOF){
-        if(lines%5==0 && c-'0'==id){
+        if(c=='\n'){
+             lines++;
+        }
+        if(lines%5==0 && c==id){
             //achou o id
             found = 1;
         }
-        if(lines%5==2 && found){
+        if(c!= '\n' && lines%5==2 && found == 1){
             //linha do titulo
             response[totalLetters] = c;
             totalLetters++;
         }
-        if(c=='\n'){
-             lines++;
-        }
-        if(c=='\n' && found && lines%5==2){
+
+        if(c=='\n' && found && lines%5==3){
             fclose(f);
             return (1); //acabou a linha do titulo, encerrar
         }
-     }
+    }
     fclose(f);
     return (0); //nao achou
 }
@@ -187,6 +189,7 @@ int list_movie_by_gender(char genre[50],char * response){
         return(-1);
     }
     while ((c = getc(f)) != EOF){
+        printf("Lines is %d\n", lines);
         if(c=='\n'){
             lines++;
         }
@@ -271,6 +274,16 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 5:
             printf("Solicitação de busca pelo título de um filme\n");
+
+            find_title_by_id(m->id + '0', message);
+
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+            printf("Servidor: %d bytes enviados", numbytes);
             break;
         case 6:
             printf("Solicitação de busca por todas as informações de um filme\n");
