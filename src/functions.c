@@ -299,6 +299,17 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 7:
             printf("Solicitação por todos os dados de todos os filmes\n");
+
+            list_all(message);
+
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+            printf("Servidor: %d bytes enviados", numbytes);
+
             break;
         default:
             return -1;
