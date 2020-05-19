@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-
+#include <unistd.h>
 char* filename = "db.txt";
 
 int CLI_COMMAND_SIZE = sizeof(movie) + sizeof(char);
+int RESPONSE_SIZE = 5000;
+
 // int count_movies(){
 //     FILE *fp;
 //     int count = 0;  // Line counter (result)
@@ -220,8 +222,11 @@ int list_movie_by_gender(char genre[50],char * response){
     return(1);
 }
 
-int handle_menu(int menu_option, movie *m)
+int handle_menu(int menu_option, movie *m, int socket)
 {
+    int numbytes;
+    char message[RESPONSE_SIZE];
+    memset(message, '\0', RESPONSE_SIZE);
 
     switch (menu_option){
         case 1:
@@ -237,6 +242,25 @@ int handle_menu(int menu_option, movie *m)
             break;
         case 3:
             printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
+
+            // strcpy(message, "Olar!");
+            list_all(message);
+            printf("Servidor: message é '%s'\n", message);
+
+            if (send(socket, message, sizeof(message), 0) == -1){
+                printf("Erro ao enviar mensagem!\n");
+            }
+
+
+
+            // numbytes = write(socket, message, 5000);
+
+            // if (numbytes != RESPONSE_SIZE * sizeof(char))
+            // {
+            //     printf("Servidor: erro ao enviar resposta");
+            // }
+
+            printf("Servidor: %d bytes enviados", numbytes);
             break;
         case 4:
             printf("Solicitação de listagem de todos os filmes de um gênero\n");
