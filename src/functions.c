@@ -179,6 +179,8 @@ int list_movie_by_gender(char genre[50],char * response){
     int found = 0;
     int check = 0;
     FILE *f = fopen(filename, "r");
+
+    int genSize = strlen(genre);
     if (f == NULL)
     {
         printf("Error opening file!\n");
@@ -198,6 +200,8 @@ int list_movie_by_gender(char genre[50],char * response){
         }
 
         if(check){
+            genero[genSize] = '\0';
+            printf("Comparando '%s' com '%s'\n", genero, genre);
             if(strcmp(genero, genre) == 0){ //é o genero certo
                 found = 1;
             }
