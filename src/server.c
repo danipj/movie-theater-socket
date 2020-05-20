@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
-
+#include <time.h>
 #include "functions.h"
 
 #define PORT "8110" // Porta de conexão ao servidor
@@ -143,7 +143,10 @@ int main(void)
             close(sockfd);
             int cli_option;
             int read_bytes;
+            clock_t start_time, end_time;
             movie m;
+
+            start_time = clock();
 
             // Primeiro, lemos o comando do cliente
             read_bytes = recv(new_fd, &cli_option, sizeof(int), 0);
@@ -173,6 +176,10 @@ int main(void)
             handle_menu(cli_option, &m, new_fd);
 
             close(new_fd);
+            end_time = clock();
+
+            printf("\nTempo servidor: %lf\n", (((double)end_time - (double)start_time) / (double)CLOCKS_PER_SEC));
+
             exit(0);
         }
         close(new_fd); // parent doesn't need this
