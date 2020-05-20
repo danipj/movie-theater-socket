@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <time.h>
 
 #include <arpa/inet.h>
 #include "functions.h"
@@ -133,6 +134,7 @@ int main(int argc, char *argv[])
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
+    clock_t start_time, end_time;
 
     if (argc != 2)
     {
@@ -189,6 +191,7 @@ int main(int argc, char *argv[])
 
     // enviando a opção selecionada
     printf("Cliente: a opção é %d\n", option);
+    start_time = clock();
     send(sockfd, &option, sizeof(int), 0);
 
     // Em seguida, enviamos toda a estrutura de filme
@@ -196,7 +199,6 @@ int main(int argc, char *argv[])
     {
         printf("Cliente: erro ao enviar o filme!");
     }
-
 
     if (option >= 3)
     {
@@ -215,7 +217,8 @@ int main(int argc, char *argv[])
         printf("Cliente: %d bytes recebidos\n", numbytes);
         printf("A resposta é '%s' e tem tamanho %lu\n", response, sizeof(response));
     }
-
+    end_time = clock();
+    printf("\nTempo cliente: %lf\n", (((double)end_time - (double)start_time) / (double)CLOCKS_PER_SEC));
     close(sockfd);
 
     return 0;
