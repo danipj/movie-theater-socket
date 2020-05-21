@@ -14,7 +14,7 @@ int CLI_COMMAND_SIZE;
 int RESPONSE_SIZE;
 
 int create_movie(int id, char title[50], char genre[50], int room, char synopsis[200]);
-int delete_movie(int movie_id);
+int delete_movie(char movie_id);
 int list_movie_title_rooms(char *response);
 int list_movie_by_gender(char genre[50], char *response);
 int find_title_by_id(char id, char *response);

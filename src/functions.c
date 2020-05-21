@@ -229,6 +229,62 @@ int list_movie_by_gender(char genre[50],char * response){
     return(1);
 }
 
+int delete_movie(char movie_id){
+    FILE *fileptr2;
+    char ch;
+    int delete_line, lines, temp = 1;
+
+    //open file in read mode
+    FILE *fileptr1 = fopen(filename, "r");
+    if (fileptr1 == NULL)
+    {
+        printf("Error: %m\n");
+        return(-1);
+    }
+    
+    lines = 0;
+    while ((ch = getc(fileptr1)) != EOF){
+        //id a cada 5 linhas: 0, 5, 10 etc
+        if(lines%5==0 && ch==movie_id){
+            //achou o id
+            delete_line = lines;
+        }
+    
+        if(ch=='\n'){
+            lines++;
+        }
+    }
+
+    //rewind
+    rewind(fileptr1);
+
+    //open new file in write mode
+    fileptr2 = fopen("replica.c", "w");
+    ch = 'A';
+    while (ch != EOF)
+    {
+        ch = getc(fileptr1);
+        //except the line to be deleted
+        if (temp < delete_line || temp > delete_line+5)
+        {
+            //copy all lines in file replica.c
+            putc(ch, fileptr2);
+        }
+        if (ch == '\n')
+        {
+            temp++;
+        }
+    }
+    fclose(fileptr1);
+    fclose(fileptr2);
+    remove(filename);
+    
+    //rename the file replica.c to original name
+    rename("replica.c", filename);
+    
+    return 1;
+}
+
 int handle_menu(int menu_option, movie *m, int socket)
 {
     int numbytes;
