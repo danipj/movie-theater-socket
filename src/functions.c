@@ -241,7 +241,7 @@ int delete_movie(char movie_id){
         printf("Error: %m\n");
         return(-1);
     }
-    
+
     lines = 0;
     while ((ch = getc(fileptr1)) != EOF){
         //id a cada 5 linhas: 0, 5, 10 etc
@@ -249,7 +249,7 @@ int delete_movie(char movie_id){
             //achou o id
             delete_line = lines;
         }
-    
+
         if(ch=='\n'){
             lines++;
         }
@@ -278,10 +278,10 @@ int delete_movie(char movie_id){
     fclose(fileptr1);
     fclose(fileptr2);
     remove(filename);
-    
+
     //rename the file replica.c to original name
     rename("replica.c", filename);
-    
+
     return 1;
 }
 
@@ -299,9 +299,7 @@ int handle_menu(int menu_option, movie *m, int socket)
             break;
         case 2:
             printf("Servidor: Solicitação de remoção do filme %d\n", m->id);
-            printf("Não implementado!!");
-            exit(1);
-            delete_movie(m->id);
+            delete_movie(m->id + '0');
             break;
         case 3:
             printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
