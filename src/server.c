@@ -13,7 +13,7 @@
 #include <time.h>
 #include "functions.h"
 
-#define PORT "8110" // Porta de conexão ao servidor
+#define PORT "8111" // Porta de conexão ao servidor
 
 #define BACKLOG 10 // Quantas conexões pendentes são permitidas
 
