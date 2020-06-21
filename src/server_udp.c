@@ -79,9 +79,12 @@ int main(void)
     freeaddrinfo(servinfo);
 
     printf("Servidor: Aguardando conexões...\n");
+    int cli_option;
 
     addr_len = sizeof their_addr;
-    numbytes = recvfrom(sockfd, buf, MAXBUFLEN - 1, 0, (struct sockaddr *)&their_addr, &addr_len);
+
+    // Lê opção do cliente
+    numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
 
     if (numbytes == -1)
     {
@@ -92,11 +95,8 @@ int main(void)
     printf("Servidor: recebi pacote de %s\n", inet_ntop(their_addr.ss_family,
                                                         get_in_addr((struct sockaddr *)&their_addr),
                                                         s, sizeof s));
-    buf[numbytes] = '\0';
-    int cli_option;
 
-    cli_option = atoi(buf);
-    printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
+     printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
 
     close(sockfd);
 
