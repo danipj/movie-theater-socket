@@ -304,7 +304,7 @@ int handle_menu(int menu_option, movie *m, int socket)
         case 3:
             printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
 
-            list_all(message);
+            list_movie_title_rooms(message);
             printf("Servidor: message é '%s'\n", message);
 
             if (send(socket, message, sizeof(message), 0) == -1){
