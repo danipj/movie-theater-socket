@@ -87,7 +87,9 @@ em si pode receber.
 
 Ao contrário do implementado anteriormente no projeto 1, em que foi utilizado o TCP, utilizando o UDP são enviados datagramas inteiros através da rede, não é necessário criar forks mas devemos implementar select ou poll. 
 
-Uma vantagem de se usar o UDP é que temos uma comunicação mais rápida, mas mais propensa a perda de pacotes, uma vez que não existe nenhum _handshake_ nem confirmação de que os datagramas foram enviados com sucesso. Também é necessário uma leitura bloqueante então fica difícil realizar qualquer outra ação em paralelo.
+Uma vantagem de se usar o UDP é que temos uma comunicação mais rápida. Por causa da sua velocidade, o protocolo UDP é interessante para streaming de vídeos, vídeochamadas e jogos online. Tais operações acabam não sendo muito prejudicadas caso algum pacote se perca no meio do caminho, uma vez que não no UDP não existe nenhum _handshake_ nem confirmação de que os datagramas foram enviados com sucesso. Pode ser que seja necessário reordenar os pacotes, algo que não acontece com o TCP, que além de confirmar que os pacotes chegaram, captura os pacotes sequencialmente.
+
+Também é necessário uma leitura bloqueante então fica difícil realizar qualquer outra ação em paralelo.
 
 ## Conclusão
 
