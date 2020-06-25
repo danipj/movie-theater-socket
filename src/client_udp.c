@@ -160,26 +160,24 @@ int main(int argc, char *argv[])
     }
 
     // Envia opção para o servidor
-    // numbytes = sendto(sockfd, &option, sizeof(int), 0,
-    //                   p->ai_addr, p->ai_addrlen);
-    // if (numbytes == -1)
-    // {
-    //     perror("client: sendto");
-    //     exit(1);
-    // }
+    numbytes = sendto(sockfd, &option, sizeof(int), 0,
+                      p->ai_addr, p->ai_addrlen);
+    if (numbytes == -1)
+    {
+        perror("client: sendto");
+        exit(1);
+    }
 
     // Envia filme para o servidor
     numbytes = sendto(sockfd, &m, sizeof(movie), 0,
-                          p->ai_addr, p->ai_addrlen);
-    // while (numbytes != sizeof(movie))
-    // {
+                      p->ai_addr, p->ai_addrlen);
 
-    //     if (numbytes == -1)
-    //     {
-    //         perror("Erro no envio do filme");
-    //         exit(1);
-    //     }
-    // }
+    if (numbytes == -1)
+    {
+        perror("Erro no envio do filme");
+        exit(1);
+    }
+
     freeaddrinfo(servinfo);
 
     printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);

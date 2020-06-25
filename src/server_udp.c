@@ -83,30 +83,27 @@ int main(void)
 
     int cli_option;
 
-    movie* m =malloc(sizeof(struct movie));
+    while (1)
+    {
+        movie *m = malloc(sizeof(struct movie));
+        addr_len = sizeof their_addr;
 
+        // Lê opção do cliente
+        numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
 
-    addr_len = sizeof their_addr;
+        if (numbytes == -1)
+        {
+            perror("Erro na leitura da opção");
+            exit(1);
+        }
 
-    // Lê opção do cliente
-    // numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
+        printf("Servidor: recebi pacote de %s\n", inet_ntop(their_addr.ss_family,
+                                                            get_in_addr((struct sockaddr *)&their_addr),
+                                                            s, sizeof s));
 
-    // if (numbytes == -1)
-    // {
-    //     perror("Erro na leitura da opção");
-    //     exit(1);
-    // }
+        printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
 
-    // printf("Servidor: recebi pacote de %s\n", inet_ntop(their_addr.ss_family,
-    //                                                     get_in_addr((struct sockaddr *)&their_addr),
-    //                                                     s, sizeof s));
-
-    // printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
-
-    numbytes = 0;
-    int step = 0;
-
-    while (1) {
+        numbytes = 0;
         addr_len = sizeof(their_addr);
         numbytes = recvfrom(sockfd, m, sizeof(movie), 0, (struct sockaddr *)&their_addr, &addr_len);
         if (numbytes == -1)
@@ -117,11 +114,6 @@ int main(void)
         printf("Servidor: recebi o filme:\n");
         print_movie(m);
     }
-
-
-
-
-
 
     close(sockfd);
 
