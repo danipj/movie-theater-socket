@@ -12,6 +12,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include "functions.h"
 
 #define MYPORT "4950" // the port users will be connecting to
 
@@ -79,24 +80,48 @@ int main(void)
     freeaddrinfo(servinfo);
 
     printf("Servidor: Aguardando conexões...\n");
+
     int cli_option;
+
+    movie* m =malloc(sizeof(struct movie));
+
 
     addr_len = sizeof their_addr;
 
     // Lê opção do cliente
-    numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
+    // numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
 
-    if (numbytes == -1)
-    {
-        perror("recvfrom");
-        exit(1);
+    // if (numbytes == -1)
+    // {
+    //     perror("Erro na leitura da opção");
+    //     exit(1);
+    // }
+
+    // printf("Servidor: recebi pacote de %s\n", inet_ntop(their_addr.ss_family,
+    //                                                     get_in_addr((struct sockaddr *)&their_addr),
+    //                                                     s, sizeof s));
+
+    // printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
+
+    numbytes = 0;
+    int step = 0;
+
+    while (1) {
+        addr_len = sizeof(their_addr);
+        numbytes = recvfrom(sockfd, m, sizeof(movie), 0, (struct sockaddr *)&their_addr, &addr_len);
+        if (numbytes == -1)
+        {
+            perror("Erro na leitura do filme");
+            exit(1);
+        }
+        printf("Servidor: recebi o filme:\n");
+        print_movie(m);
     }
 
-    printf("Servidor: recebi pacote de %s\n", inet_ntop(their_addr.ss_family,
-                                                        get_in_addr((struct sockaddr *)&their_addr),
-                                                        s, sizeof s));
 
-     printf("Servidor: o cliente selecionou a opção %d\n", cli_option);
+
+
+
 
     close(sockfd);
 

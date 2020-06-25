@@ -14,7 +14,7 @@
 #include <netdb.h>
 #include "functions.h"
 
-#define SERVERPORT "4950"	// the port users will be connecting to
+#define SERVERPORT "4950" // the port users will be connecting to
 
 void remove_final_linebreaker(char str[])
 {
@@ -24,7 +24,6 @@ void remove_final_linebreaker(char str[])
         str[len - 1] = '\0';
     }
 }
-
 
 int menu(movie *m)
 {
@@ -115,56 +114,76 @@ int menu(movie *m)
 
 int main(int argc, char *argv[])
 {
-	int sockfd;
-	struct addrinfo hints, *servinfo, *p;
-	int rv;
-	int numbytes;
+    int sockfd;
+    struct addrinfo hints, *servinfo, *p;
+    int rv;
+    int numbytes;
 
-	if (argc != 2) {
-		fprintf(stderr, "Utilização: client <ip>\n");
-		exit(1);
-	}
+    if (argc != 2)
+    {
+        fprintf(stderr, "Utilização: client <ip>\n");
+        exit(1);
+    }
 
     movie m;
     int option;
     option = menu(&m);
     printf("O título %s terá o id %d\n", m.title, m.id);
 
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_DGRAM;
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
 
-	if ((rv = getaddrinfo(argv[1], SERVERPORT, &hints, &servinfo)) != 0) {
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return 1;
-	}
+    if ((rv = getaddrinfo(argv[1], SERVERPORT, &hints, &servinfo)) != 0)
+    {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
 
-	// loop through all the results and make a socket
-	for(p = servinfo; p != NULL; p = p->ai_next) {
-		if ((sockfd = socket(p->ai_family, p->ai_socktype,
-				p->ai_protocol)) == -1) {
-			perror("talker: socket");
-			continue;
-		}
+    // loop through all the results and make a socket
+    for (p = servinfo; p != NULL; p = p->ai_next)
+    {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype,
+                             p->ai_protocol)) == -1)
+        {
+            perror("talker: socket");
+            continue;
+        }
 
-		break;
-	}
+        break;
+    }
 
-	if (p == NULL) {
-		fprintf(stderr, "client: failed to create socket\n");
-		return 2;
-	}
+    if (p == NULL)
+    {
+        fprintf(stderr, "client: failed to create socket\n");
+        return 2;
+    }
 
-	if ((numbytes = sendto(sockfd, &option, sizeof(int), 0,
-			 p->ai_addr, p->ai_addrlen)) == -1) {
-		perror("client: sendto");
-		exit(1);
-	}
+    // Envia opção para o servidor
+    // numbytes = sendto(sockfd, &option, sizeof(int), 0,
+    //                   p->ai_addr, p->ai_addrlen);
+    // if (numbytes == -1)
+    // {
+    //     perror("client: sendto");
+    //     exit(1);
+    // }
 
-	freeaddrinfo(servinfo);
+    // Envia filme para o servidor
+    numbytes = sendto(sockfd, &m, sizeof(movie), 0,
+                          p->ai_addr, p->ai_addrlen);
+    // while (numbytes != sizeof(movie))
+    // {
 
-	printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);
-	close(sockfd);
+    //     if (numbytes == -1)
+    //     {
+    //         perror("Erro no envio do filme");
+    //         exit(1);
+    //     }
+    // }
+    freeaddrinfo(servinfo);
 
-	return 0;
+    printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);
+    close(sockfd);
+
+    return 0;
 }
