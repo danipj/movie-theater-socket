@@ -1,4 +1,4 @@
-# Relatório - Projeto 1 MC833
+# Relatório - Projeto 2 MC833
 
 Daniela Palumbo - 166301
 
@@ -7,11 +7,11 @@ Felipe Vieira - 155335
 ## Introdução
 
 O objetivo do projeto é estruturar um sistema de cinema, com cadastro de filmes
-e alocação de salas, baseado na comunicação TCP entre cliente e servidor.
+e alocação de salas, baseado na comunicação UDP entre cliente e servidor. Deve ser possível realizar o cadastro de filmes, consulta por salas, títulos, ids, listagem de todos os filmes, dentre outros. A partir da comunicação entre cliente e servidor utilizando o protocolo UDP, é possível enviar uma opção ao servidor a partir do cliente, inserir ou recuperar os dados desejados e, apenas ao final, encerrar o programa. O servidor se encarrega de ouvir as opções desejadas pelo cliente e devolver os dados quando necessário. 
 
 ## Descrição geral e casos de uso
 
-O projeto constitui de um cliente e um servidor que se comunicam atraveś do protocolo TCP. No cliente temos uma visualização de um menu e das opções que podem ser realizadas: cadastro de um filme, consulta de um filme por seu ID, consulta de um título de filme por seu ID, consulta de filmes por gênero, consulta de títulos de filmes e suas salas, consulta de todos os filmes e remoção de filmes, dando também a opção de encerrar o programa. O servidor, por sua vez, analisa qual foi a opção enviada pelo cliente, realiza a ação esperada, consultando o banco de dados, e retorna o resultado para o cliente.
+O projeto constitui de um cliente e um servidor que se comunicam atraveś do protocolo UDP. No cliente temos uma visualização de um menu e das opções que podem ser realizadas: cadastro de um filme, consulta de um filme por seu ID, consulta de um título de filme por seu ID, consulta de filmes por gênero, consulta de títulos de filmes e suas salas, consulta de todos os filmes e remoção de filmes, dando também a opção de encerrar o programa. O servidor, por sua vez, analisa qual foi a opção enviada pelo cliente, realiza a ação esperada, consultando o banco de dados, e retorna o resultado para o cliente.
 
 |  função                                                                                                              | descrição                                                                                     |
 |----------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
@@ -23,6 +23,7 @@ O projeto constitui de um cliente e um servidor que se comunicam atraveś do pro
 | int find_info_by_id(char id, char * response);                                                                  | Dado um id, devolve todas as informações do filme associado.                                                     |
 | int list_all(char * response);                                                                  | Lista todos os filmes.                                                     |
 
+O cliente deve, portanto, inserir os filmes desejados no banco de dados, utilizando a função ```create_movie```. Uma vez inseridos, é possível realizar quaisquer consultas, bem como apagar o filme do banco.
 
 ## Armazenamento e estrutura de dados
 
@@ -82,6 +83,14 @@ python para evitar erros de medida vindo do overhead que o sistema
 de teste pode ter ou de eventuais interrupções do SO que o tester
 em si pode receber.
 
+## Diferenças entre o protocolo TCP e UDP
+
+Ao contrário do implementado anteriormente no projeto 1, em que foi utilizado o TCP, utilizando o UDP são enviados datagramas inteiros através da rede, não é necessário criar forks mas devemos implementar select ou poll. 
+
+Uma vantagem de se usar o UDP é que temos uma comunicação mais rápida. Por causa da sua velocidade, o protocolo UDP é interessante para streaming de vídeos, vídeochamadas e jogos online. Tais operações acabam não sendo muito prejudicadas caso algum pacote se perca no meio do caminho, uma vez que não no UDP não existe nenhum _handshake_ nem confirmação de que os datagramas foram enviados com sucesso. Pode ser que seja necessário reordenar os pacotes, algo que não acontece com o TCP, que além de confirmar que os pacotes chegaram, captura os pacotes sequencialmente.
+
+Também é necessário uma leitura bloqueante então fica difícil realizar qualquer outra ação em paralelo.
+
 ## Conclusão
 
-Concluímos a partir desse projeto que a comunicação TCP é confiável, não prejudicada por perda de pacotes e rápida, sendo assim muito útil para a implementação de tal sistema.
+Concluímos a partir desse projeto que a comunicação UDP é rápida, mas por ser propensa a perda de pacotes é necessário trabalhar outras maneiras de garantir que os dados estão chegando a seu destino correto. Logo, para um sistema de cinema em que haveriam múltiplos acessos simultâneos e seria necessária uma garantia na comunicação, afinal uma suposta venda de ingressos poderia ser o objetivo final, o protocolo UDP não é o ideal.
