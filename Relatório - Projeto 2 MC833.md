@@ -60,17 +60,12 @@ Realizamos alguns testes para avaliar se o nosso método seria eficaz o suficien
 Assim, decidimos manter essa implementação, sem necessidade de adicionar complexidade de banco de dados ao código.
 
 ## Detalhes de implementação
-A comunicação cliente-servidor é feita através da biblioteca nativa de sockets.
-O servidor abre um socket e usa de um spin-lock para aguardar por clientes. Quando
-uma conexão chega, ele cria um fork para atender o pedido e ouve pelo pedido
-do cliente.
 
-O cliente, por sua vez, abre também um soquete e tenta se comunicar com o servidor.
-Uma vez que a conexão é aceita, ele envia a operação selecionada juntamente dos
-possíveis dados necessários. Caso seja necessário, ele aguarda por dados
-adicionais do servidor.
+Ao iniciar o programa, o servidor começa aguardando algum contato do cliente.
 
-Quando o servidor recebe os dados do cliente, ele seleciona a operação apropriada
+A comunicação se dá da seguinte forma: o cliente envia a operação desejada para o servidor, e em seguida os dados necessários. Ao final, caso a opção desejada seja maior ou igual a 3, o que indica que é uma operação que almeja uma resposta, ele aguarda pela resposta do servidor.
+
+De maneira similar ao TCP, quando o servidor recebe os dados do cliente, ele seleciona a operação apropriada
 e, caso necessário, envia mais dados de volta. Caso alguma das funções apresente
 um erro (como não ter achado o arquivo dos dados, por exemplo), o servidor devolve o código -1.
 
@@ -85,7 +80,7 @@ em si pode receber.
 
 ## Diferenças entre o protocolo TCP e UDP
 
-Ao contrário do implementado anteriormente no projeto 1, em que foi utilizado o TCP, utilizando o UDP são enviados datagramas inteiros através da rede, não é necessário criar forks mas devemos implementar select ou poll. 
+Ao contrário do implementado anteriormente no projeto 1, em que foi utilizado o TCP, utilizando o UDP são enviados datagramas inteiros através da rede. Portanto, não é necessário criar forks. 
 
 Uma vantagem de se usar o UDP é que temos uma comunicação mais rápida. Por causa da sua velocidade, o protocolo UDP é interessante para streaming de vídeos, vídeochamadas e jogos online. Tais operações acabam não sendo muito prejudicadas caso algum pacote se perca no meio do caminho, uma vez que não no UDP não existe nenhum _handshake_ nem confirmação de que os datagramas foram enviados com sucesso. Pode ser que seja necessário reordenar os pacotes, algo que não acontece com o TCP, que além de confirmar que os pacotes chegaram, captura os pacotes sequencialmente.
 
