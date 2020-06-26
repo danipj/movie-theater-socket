@@ -5,7 +5,13 @@
 #include <stddef.h>
 #include <string.h>
 #include <unistd.h>
-char* filename = "db.txt";
+#include <errno.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+char *filename = "db.txt";
 
 int CLI_COMMAND_SIZE = sizeof(movie) + sizeof(char);
 int RESPONSE_SIZE = 5000;
@@ -42,12 +48,13 @@ int RESPONSE_SIZE = 5000;
 
     se correr tudo bem retorna 1, caso contrario retorna -1
 **/
-int create_movie(int id, char title[50], char genre[50], int room, char synopsis[200]){
+int create_movie(int id, char title[50], char genre[50], int room, char synopsis[200])
+{
     FILE *f = fopen(filename, "a+");
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
 
     /*int id = count_movies()+1; /*descobre prox id*/
@@ -61,24 +68,27 @@ int create_movie(int id, char title[50], char genre[50], int room, char synopsis
     return (1);
 }
 
-int list_all(char *response){
+int list_all(char *response)
+{
     FILE *f = fopen(filename, "r");
     char c;
     int total = 0;
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
-     while ((c = getc(f)) != EOF){
+    while ((c = getc(f)) != EOF)
+    {
         response[total] = c;
         total++;
-     }
+    }
     fclose(f);
-    return(1);
+    return (1);
 }
 
-int find_title_by_id(char id, char * response){
+int find_title_by_id(char id, char *response)
+{
     char c;
     int lines = 0;
     int found = 0;
@@ -88,24 +98,29 @@ int find_title_by_id(char id, char * response){
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
     //id a cada 5 linhas: 0, 5, 10 etc
-    while ((c = getc(f)) != EOF){
-        if(c=='\n'){
-             lines++;
+    while ((c = getc(f)) != EOF)
+    {
+        if (c == '\n')
+        {
+            lines++;
         }
-        if(lines%5==0 && c==id){
+        if (lines % 5 == 0 && c == id)
+        {
             //achou o id
             found = 1;
         }
-        if(c!= '\n' && lines%5==2 && found == 1){
+        if (c != '\n' && lines % 5 == 2 && found == 1)
+        {
             //linha do titulo
             response[totalLetters] = c;
             totalLetters++;
         }
 
-        if(c=='\n' && found && lines%5==3){
+        if (c == '\n' && found && lines % 5 == 3)
+        {
             fclose(f);
             return (1); //acabou a linha do titulo, encerrar
         }
@@ -114,7 +129,8 @@ int find_title_by_id(char id, char * response){
     return (0); //nao achou
 }
 
-int find_info_by_id(char id, char * response){
+int find_info_by_id(char id, char *response)
+{
     char c;
     int lines = 0;
     int found = 0;
@@ -123,32 +139,38 @@ int find_info_by_id(char id, char * response){
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
     //id a cada 5 linhas: 0, 5, 10 etc
-    while ((c = getc(f)) != EOF){
-        if(lines%5==0 && c==id){
+    while ((c = getc(f)) != EOF)
+    {
+        if (lines % 5 == 0 && c == id)
+        {
             //achou o id
             found = 1;
         }
-        if(found){
+        if (found)
+        {
             response[totalLetters] = c;
             totalLetters++;
         }
 
-        if(c=='\n'){
+        if (c == '\n')
+        {
             lines++;
         }
-        if(found && lines%5==0 && c!=id){
+        if (found && lines % 5 == 0 && c != id)
+        {
             fclose(f);
             return (1); //chegou no proximo registro, encerrar
         }
-     }
+    }
     fclose(f);
     return (0); //nao achou
 }
 
-int list_movie_title_rooms(char * response){
+int list_movie_title_rooms(char *response)
+{
     char c;
     int lines = 0;
     int total = 0;
@@ -156,22 +178,26 @@ int list_movie_title_rooms(char * response){
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
-    while ((c = getc(f)) != EOF){
-        if(lines%5==2 || lines%5==3){
-            response[total]=c;
+    while ((c = getc(f)) != EOF)
+    {
+        if (lines % 5 == 2 || lines % 5 == 3)
+        {
+            response[total] = c;
             total++;
         }
-        if(c=='\n'){
+        if (c == '\n')
+        {
             lines++;
         }
     }
     fclose(f);
-    return(1);
+    return (1);
 }
 
-int list_movie_by_gender(char genre[50],char * response){
+int list_movie_by_gender(char genre[50], char *response)
+{
     char c;
     int i;
     int lines = 0;
@@ -186,50 +212,59 @@ int list_movie_by_gender(char genre[50],char * response){
     if (f == NULL)
     {
         printf("Error opening file!\n");
-        return(-1);
+        return (-1);
     }
-    while ((c = getc(f)) != EOF){
+    while ((c = getc(f)) != EOF)
+    {
         printf("Lines is %d\n", lines);
-        if(c=='\n'){
+        if (c == '\n')
+        {
             lines++;
         }
-        if(lines%5==1 && c!='\n'){ //pegar genero
-            genero[totalGenre]=c;
+        if (lines % 5 == 1 && c != '\n')
+        { //pegar genero
+            genero[totalGenre] = c;
             totalGenre++;
         }
 
-        if(lines%5==2 && c=='\n'){ //terminou o genero pode comparar
+        if (lines % 5 == 2 && c == '\n')
+        { //terminou o genero pode comparar
             check = 1;
         }
 
-        if(check){
+        if (check)
+        {
             genero[genSize] = '\0';
             printf("Comparando '%s' com '%s'\n", genero, genre);
-            if(strcmp(genero, genre) == 0){ //é o genero certo
+            if (strcmp(genero, genre) == 0)
+            { //é o genero certo
                 found = 1;
             }
             check = 0;
             for (i = 0; i < totalGenre; i++)
             {
-                genero[i]='\0';
+                genero[i] = '\0';
             }
-            totalGenre=0;
+            totalGenre = 0;
         }
 
-        if(found && lines%5==2){ //pegar titulo
+        if (found && lines % 5 == 2)
+        { //pegar titulo
             response[total] = c;
             total++;
         }
 
-        if(lines%5==3 && c=='\n'){ //terminou o titulo, zerar auxiliares
+        if (lines % 5 == 3 && c == '\n')
+        { //terminou o titulo, zerar auxiliares
             found = 0;
         }
     }
     fclose(f);
-    return(1);
+    return (1);
 }
 
-int delete_movie(char movie_id){
+int delete_movie(char movie_id)
+{
     FILE *fileptr2;
     char ch;
     int delete_line, lines, temp = 1;
@@ -239,18 +274,21 @@ int delete_movie(char movie_id){
     if (fileptr1 == NULL)
     {
         printf("Error: %m\n");
-        return(-1);
+        return (-1);
     }
 
     lines = 0;
-    while ((ch = getc(fileptr1)) != EOF){
+    while ((ch = getc(fileptr1)) != EOF)
+    {
         //id a cada 5 linhas: 0, 5, 10 etc
-        if(lines%5==0 && ch==movie_id){
+        if (lines % 5 == 0 && ch == movie_id)
+        {
             //achou o id
             delete_line = lines;
         }
 
-        if(ch=='\n'){
+        if (ch == '\n')
+        {
             lines++;
         }
     }
@@ -265,7 +303,7 @@ int delete_movie(char movie_id){
     {
         ch = getc(fileptr1);
         //except the line to be deleted
-        if (temp < delete_line || temp > delete_line+5)
+        if (temp < delete_line || temp > delete_line + 5)
         {
             //copy all lines in file replica.c
             putc(ch, fileptr2);
@@ -285,96 +323,102 @@ int delete_movie(char movie_id){
     return 1;
 }
 
-int handle_menu(int menu_option, movie *m, int socket)
+int handle_menu(int menu_option, movie *m, int socket, struct sockaddr *addr, socklen_t addr_len)
 {
     int numbytes;
     char message[RESPONSE_SIZE];
     memset(message, '\0', RESPONSE_SIZE);
 
-    switch (menu_option){
-        case 1:
-            printf("Servidor: Solicitação por cadastro do filme\n");
-            create_movie(m->id, m->title, m->genre, m->room, m->synopsis);
-            printf("Servidor: Filme '%s' cadastrado!\n", m->title);
-            break;
-        case 2:
-            printf("Servidor: Solicitação de remoção do filme %d\n", m->id);
-            delete_movie(m->id + '0');
-            break;
-        case 3:
-            printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
+    switch (menu_option)
+    {
+    case 1:
+        printf("Servidor: Solicitação por cadastro do filme\n");
+        create_movie(m->id, m->title, m->genre, m->room, m->synopsis);
+        printf("Servidor: Filme '%s' cadastrado!\n", m->title);
+        break;
+    case 2:
+        printf("Servidor: Solicitação de remoção do filme %d\n", m->id);
+        delete_movie(m->id + '0');
+        break;
+    case 3:
+        printf("Solicitação de listagem dos títulos e salas de todos os filmes\n");
 
-            list_movie_title_rooms(message);
-            printf("Servidor: message é '%s'\n", message);
+        list_movie_title_rooms(message);
+        printf("Servidor: message é '%s'\n", message);
 
-            if (send(socket, message, sizeof(message), 0) == -1){
-                printf("Erro ao enviar mensagem!\n");
-            }
+        if (send(socket, message, sizeof(message), 0) == -1)
+        {
+            printf("Erro ao enviar mensagem!\n");
+        }
 
-            printf("Servidor: %d bytes enviados", numbytes);
-            break;
-        case 4:
-            printf("Solicitação de listagem de todos os filmes de um gênero\n");
+        printf("Servidor: %d bytes enviados", numbytes);
+        break;
+    case 4:
+        printf("Solicitação de listagem de todos os filmes de um gênero\n");
 
-            list_movie_by_gender(m->genre, message);
+        list_movie_by_gender(m->genre, message);
 
-            printf("Servidor: message é '%s'\n", message);
+        printf("Servidor: message é '%s'\n", message);
 
-            if (send(socket, message, sizeof(message), 0) == -1){
-                printf("Erro ao enviar mensagem!\n");
-            }
+        if (send(socket, message, sizeof(message), 0) == -1)
+        {
+            printf("Erro ao enviar mensagem!\n");
+        }
 
-            printf("Servidor: %d bytes enviados", numbytes);
-            break;
-        case 5:
-            printf("Solicitação de busca pelo título de um filme\n");
+        printf("Servidor: %d bytes enviados", numbytes);
+        break;
+    case 5:
+        printf("Solicitação de busca pelo título de um filme\n");
 
-            find_title_by_id(m->id + '0', message);
+        find_title_by_id(m->id + '0', message);
 
-            printf("Servidor: message é '%s'\n", message);
+        printf("Servidor: message é '%s'\n", message);
 
-            if (send(socket, message, sizeof(message), 0) == -1){
-                printf("Erro ao enviar mensagem!\n");
-            }
+        if (send(socket, message, sizeof(message), 0) == -1)
+        {
+            printf("Erro ao enviar mensagem!\n");
+        }
 
-            printf("Servidor: %d bytes enviados", numbytes);
-            break;
-        case 6:
-            printf("Solicitação de busca por todas as informações de um filme\n");
-            find_info_by_id(m->id + '0', message);
+        printf("Servidor: %d bytes enviados", numbytes);
+        break;
+    case 6:
+        printf("Solicitação de busca por todas as informações de um filme\n");
+        find_info_by_id(m->id + '0', message);
 
-            printf("Servidor: message é '%s'\n", message);
+        printf("Servidor: message é '%s'\n", message);
 
-            if (send(socket, message, sizeof(message), 0) == -1){
-                printf("Erro ao enviar mensagem!\n");
-            }
+        if (send(socket, message, sizeof(message), 0) == -1)
+        {
+            printf("Erro ao enviar mensagem!\n");
+        }
 
-            printf("Servidor: %d bytes enviados", numbytes);
-            break;
-        case 7:
-            printf("Solicitação por todos os dados de todos os filmes\n");
+        printf("Servidor: %d bytes enviados", numbytes);
+        break;
+    case 7:
+        printf("Solicitação por todos os dados de todos os filmes\n");
 
-            list_all(message);
+        list_all(message);
 
-            printf("Servidor: message é '%s'\n", message);
+        printf("Servidor: message é '%s'\n", message);
 
-            if (send(socket, message, sizeof(message), 0) == -1){
-                printf("Erro ao enviar mensagem!\n");
-            }
+        if (sendto(socket, message, sizeof(message), 0, addr, addr_len) == -1)
+        {
+            printf("Erro ao enviar mensagem!\n");
+        }
 
-            printf("Servidor: %d bytes enviados", numbytes);
+        printf("Servidor: %d bytes enviados", numbytes);
 
-            break;
-        default:
-            return -1;
-
+        break;
+    default:
+        return -1;
     }
 
     return 0;
 }
 
-int send_all(int socket, void *buffer, size_t length) {
-    char *ptr = (char*) buffer;
+int send_all(int socket, void *buffer, size_t length)
+{
+    char *ptr = (char *)buffer;
     while (length > 0)
     {
         int i = send(socket, ptr, length, 0);
@@ -386,7 +430,7 @@ int send_all(int socket, void *buffer, size_t length) {
     return 0;
 }
 
-void print_movie(movie* m)
+void print_movie(movie *m)
 {
     printf("----------------\n");
     printf("id: %d\n", m->id);

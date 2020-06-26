@@ -180,7 +180,20 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo);
 
-    printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);
+    printf("cliente: enviei %d bytes\n", numbytes);
+
+    char response[RESPONSE_SIZE];
+    strncpy(response, "", sizeof(response));
+
+    numbytes = recvfrom(sockfd, &response, RESPONSE_SIZE - 1, 0, p->ai_addr, &p->ai_addrlen);
+    if (numbytes == -1)
+    {
+        perror("Erro no recebimento de resposta");
+        exit(1);
+    }
+
+    printf("Resposta: %s\n", response);
+
     close(sockfd);
 
     return 0;

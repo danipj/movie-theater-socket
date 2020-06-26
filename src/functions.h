@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 #include <stddef.h>
+#include <netdb.h>
+
 typedef struct movie
 {
     int id;
@@ -21,7 +23,7 @@ int find_title_by_id(char id, char *response);
 int find_info_by_id(char id, char *response);
 int list_all(char *response);
 
-int handle_menu(int menu_option, movie *m, int socket);
+int handle_menu(int menu_option, movie *m, int socket, struct sockaddr *addr, socklen_t addr_len);
 int send_all(int socket, void *buffer, size_t length);
 void print_movie(movie* m);
 #endif
