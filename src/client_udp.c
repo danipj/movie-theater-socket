@@ -13,6 +13,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "functions.h"
+#include <time.h>
 
 #define SERVERPORT "4950" // the port users will be connecting to
 
@@ -118,6 +119,7 @@ int main(int argc, char *argv[])
     struct addrinfo hints, *servinfo, *p;
     int rv;
     int numbytes;
+    clock_t start_time, end_time;
 
     if (argc != 2)
     {
@@ -126,11 +128,13 @@ int main(int argc, char *argv[])
     }
 
     movie m;
+    memset(&m, 0, sizeof(movie));
     int option;
     option = menu(&m);
     printf("O título %s terá o id %d\n", m.title, m.id);
 
     memset(&hints, 0, sizeof hints);
+
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_DGRAM;
 
@@ -159,6 +163,7 @@ int main(int argc, char *argv[])
         return 2;
     }
 
+    start_time = clock();
     // Envia opção para o servidor
     numbytes = sendto(sockfd, &option, sizeof(int), 0,
                       p->ai_addr, p->ai_addrlen);
@@ -182,18 +187,23 @@ int main(int argc, char *argv[])
 
     printf("cliente: enviei %d bytes\n", numbytes);
 
-    char response[RESPONSE_SIZE];
-    strncpy(response, "", sizeof(response));
-
-    numbytes = recvfrom(sockfd, &response, RESPONSE_SIZE - 1, 0, p->ai_addr, &p->ai_addrlen);
-    if (numbytes == -1)
+    if (option >= 3)
     {
-        perror("Erro no recebimento de resposta");
-        exit(1);
+
+        char response[RESPONSE_SIZE];
+        strncpy(response, "", sizeof(response));
+
+        numbytes = recvfrom(sockfd, &response, RESPONSE_SIZE - 1, 0, p->ai_addr, &p->ai_addrlen);
+        if (numbytes == -1)
+        {
+            perror("Erro no recebimento de resposta");
+            exit(1);
+        }
+
+        printf("Resposta: %s\n", response);
     }
-
-    printf("Resposta: %s\n", response);
-
+    end_time = clock();
+    printf("\nTempo cliente: %lf\n", (((double)end_time - (double)start_time) / (double)CLOCKS_PER_SEC));
     close(sockfd);
 
     return 0;

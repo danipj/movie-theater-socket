@@ -13,6 +13,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "functions.h"
+#include <time.h>
 
 #define MYPORT "4950" // the port users will be connecting to
 
@@ -82,11 +83,12 @@ int main(void)
     printf("Servidor: Aguardando conexões...\n");
 
     int cli_option;
-
+    clock_t start_time, end_time;
     while (1)
     {
         movie *m = malloc(sizeof(struct movie));
         addr_len = sizeof their_addr;
+        start_time = clock();
 
         // Lê opção do cliente
         numbytes = recvfrom(sockfd, &cli_option, sizeof(int), 0, (struct sockaddr *)&their_addr, &addr_len);
@@ -115,7 +117,9 @@ int main(void)
         print_movie(m);
         handle_menu(cli_option, m, sockfd, (struct sockaddr *)&their_addr, addr_len);
     }
+    end_time = clock();
 
+    printf("\nTempo servidor: %lf\n", (((double)end_time - (double)start_time) / (double)CLOCKS_PER_SEC));
     close(sockfd);
 
     return 0;

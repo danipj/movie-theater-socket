@@ -235,7 +235,6 @@ int list_movie_by_gender(char genre[50], char *response)
         if (check)
         {
             genero[genSize] = '\0';
-            printf("Comparando '%s' com '%s'\n", genero, genre);
             if (strcmp(genero, genre) == 0)
             { //é o genero certo
                 found = 1;
